@@ -10,4 +10,5 @@ public class ItemRequestDto {
     private String description;    // 물건 설명
     private int startPrice;        // 경매 시작가
     private int durationHours;     // 경매 진행 시간 (몇 시간 동안 진행할지)
+    private Long sellerId; // 판매자 ID
 }

@@ -4,7 +4,9 @@ import com.example.auction.dto.ItemRequestDto;
 import com.example.auction.dto.ItemResponseDto;
 import com.example.auction.entity.AuctionStatus;
 import com.example.auction.entity.Item;
+import com.example.auction.entity.Member;
 import com.example.auction.repository.ItemRepository;
+import com.example.auction.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,12 +20,17 @@ import java.util.stream.Collectors;
 public class ItemService {
 
     private final ItemRepository itemRepository;
+    private final MemberRepository memberRepository;
 
     /**
      * 경매 물건 등록
      */
     @Transactional
     public Long createItem(ItemRequestDto requestDto) {
+
+        Member seller = memberRepository.findById(requestDto.getSellerId())
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
+
         // 현재 시간을 기준으로 마감 시간 계산 (예: 입력받은 시간만큼 더하기)
         LocalDateTime startTime = LocalDateTime.now();
         LocalDateTime endTime = startTime.plusHours(requestDto.getDurationHours());
@@ -36,6 +43,7 @@ public class ItemService {
                 .startTime(startTime)
                 .endTime(endTime)
                 .status(AuctionStatus.BIDDING) // 등록 시 기본 상태는 '입찰중'
+                .seller(seller)
                 .build();
 
         return itemRepository.save(item).getId();

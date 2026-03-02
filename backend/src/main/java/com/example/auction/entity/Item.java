@@ -31,4 +31,15 @@ public class Item {
 
     @Enumerated(EnumType.STRING) // 9. 이넘(Enum) 타입을 문자열 그대로 DB에 저장
     private AuctionStatus status; // 경매 상태 (예: 진행중, 종료)
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "seller_id")
+    private Member seller; // 이 물건을 등록한 판매자
+
+    public void updatePrice(int newPrice) {
+        if (newPrice <= this.currentPrice) {
+            throw new IllegalArgumentException("현재 가격보다 높은 금액이어야 합니다.");
+        }
+        this.currentPrice = newPrice;
+    }
 }
