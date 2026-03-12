@@ -23,9 +23,9 @@ function Navbar({ isLoggedIn }) {
               <Link to="/signup" className="text-gray-600 hover:text-blue-600">
                 회원가입
               </Link>
-              <button className="text-gray-600 hover:text-blue-600 font-medium transition-colors">
+              <Link to="/login" className="text-gray-600 hover:text-blue-600 font-medium">
                 로그인
-              </button>
+              </Link>
             </>
           )}
           {isLoggedIn && (

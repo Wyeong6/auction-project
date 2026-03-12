@@ -42,4 +42,8 @@ public class Item {
         }
         this.currentPrice = newPrice;
     }
+
+    public void closeAuction() {
+        this.status = AuctionStatus.ENDED;
+    }
 }

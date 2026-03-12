@@ -2,6 +2,7 @@ package com.example.auction.controller;
 
 import com.example.auction.dto.ItemRequestDto;
 import com.example.auction.dto.ItemResponseDto;
+import com.example.auction.dto.WinnerResponseDto;
 import com.example.auction.service.ItemService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -32,7 +33,6 @@ public class ItemController {
         // 서비스에서 변환된 DTO 리스트를 반환합니다.
         return itemService.getAllItems();
     }
-
     /**
      * 특정 경매 물건 상세 조회 (GET /api/items/{id})
      */
@@ -40,5 +40,10 @@ public class ItemController {
     public ItemResponseDto getItem(@PathVariable Long id) {
         // 주소창에 들어온 {id} 값을 읽어서 해당 물건의 정보를 반환합니다.
         return itemService.getItem(id);
+    }
+
+    @GetMapping("/{itemId}/winner")
+    public WinnerResponseDto getWinner(@PathVariable Long itemId) {
+        return itemService.getWinner(itemId);
     }
 }
