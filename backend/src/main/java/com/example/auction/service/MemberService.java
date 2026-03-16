@@ -48,4 +48,10 @@ public class MemberService {
         // 👈 진짜 토큰 생성 및 반환
         return jwtTokenProvider.createToken(member.getEmail());
     }
+
+    @Transactional(readOnly = true)
+    public Member findByEmail(String email) {
+        return memberRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("해당 이메일을 가진 회원이 존재하지 않습니다: " + email));
+    }
 }

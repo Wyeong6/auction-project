@@ -24,6 +24,7 @@ public class SecurityConfig {
                 )
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/members/**","/api/items/**").permitAll()
+                        //"/api/bids/**"
                         .anyRequest().authenticated()
                 );
         return http.build();

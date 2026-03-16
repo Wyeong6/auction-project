@@ -13,7 +13,7 @@ function Signup() {
       // 서버의 회원가입 API 호출
       await axios.post('http://localhost:8080/api/members/join', formData);
       alert("회원가입 성공! 로그인 페이지로 이동합니다.");
-      navigate('/'); // 가입 성공 시 메인으로 이동
+      navigate('/login'); // 가입 성공 시 메인으로 이동
     } catch (err) {
       console.error(err);
       alert("회원가입 실패, 입력값을 확인해주세요.");
@@ -21,8 +21,7 @@ function Signup() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <Navbar />
+<div className="min-h-[calc(100vh-65px)] bg-gray-50 pt-1">
       <div className="max-w-md mx-auto mt-20 bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
         <h2 className="text-2xl font-bold mb-6 text-center">회원가입</h2>
         <form onSubmit={handleSignup}>

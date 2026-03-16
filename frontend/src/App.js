@@ -4,6 +4,9 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Main from './pages/Main';
 import Signup from './pages/Signup';
 import Login from './pages/Login';
+import Navbar from './components/Navbar';
+import ItemDetail from './pages/ItemDetail';
+import RegisterItem from './pages/RegisterItem';
 import { useEffect, useState } from 'react';
 
 function App() {
@@ -18,10 +21,13 @@ function App() {
 
   return (
     <Router>
+      <Navbar isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
       <Routes>
         <Route path="/" element={<Main />} />
         <Route path="/signup" element={<Signup />} />
+        <Route path="/items/new" element={<RegisterItem />} />
         <Route path="/login" element={<Login setIsLoggedIn={setIsLoggedIn} />} />
+        <Route path="/items/:id" element={<ItemDetail />} />
       </Routes>
     </Router>
   );

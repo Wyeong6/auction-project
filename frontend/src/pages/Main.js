@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import Navbar from '../components/Navbar'; // 경로 확인 필수!
+import { useNavigate } from 'react-router-dom';
 
 function Main() {
   const [items, setItems] = useState([]);
-  const [isLoggedIn, setIsLoggedIn] = useState(false); 
+  const navigate = useNavigate();
 
   useEffect(() => {
     axios.get('http://localhost:8080/api/items')
@@ -13,11 +13,7 @@ function Main() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gray-50"> {/* 여기서 p-8을 제거했습니다 */}
-      {/* 1. 최상단에 Navbar 배치 */}
-      <Navbar isLoggedIn={isLoggedIn} /> 
-
-      {/* 2. 본문 영역을 별도 div로 감싸 여백(p-8) 부여 */}
+    <div className="min-h-screen bg-gray-50">
       <div className="max-w-6xl mx-auto p-8">
         <h1 className="text-3xl font-bold text-center text-gray-800 mb-10">
           🔨 실시간 경매 마켓
@@ -25,7 +21,12 @@ function Main() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {items.map(item => (
-            <div key={item.id} className="bg-white rounded-2xl shadow-sm hover:shadow-md transition-shadow border border-gray-100 overflow-hidden">
+            <div 
+              key={item.id} 
+              // 상태에 상관없이 클릭 시 상세 페이지로 이동하도록 수정
+              onClick={() => navigate(`/items/${item.id}`)}
+              className="bg-white rounded-2xl shadow-sm hover:shadow-md transition-all border border-gray-100 overflow-hidden cursor-pointer"
+            >
               <div className="p-6">
                 <div className="flex justify-between items-start mb-4">
                   <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
@@ -53,14 +54,17 @@ function Main() {
                 </div>
 
                 <button 
-                  disabled={item.status === 'ENDED'}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    navigate(`/items/${item.id}`);
+                  }}
                   className={`w-full py-3 rounded-xl font-bold transition-colors ${
                     item.status === 'BIDDING' 
                     ? 'bg-blue-600 text-white hover:bg-blue-700' 
-                    : 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                    : 'bg-gray-100 text-gray-500 hover:bg-gray-200'
                   }`}
                 >
-                  {item.status === 'BIDDING' ? '입찰하기' : '경매 마감'}
+                  {item.status === 'BIDDING' ? '입찰하기' : '상세보기 (종료)'}
                 </button>
               </div>
             </div>
