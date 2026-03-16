@@ -33,13 +33,55 @@ function ItemDetail() {
     });
   };
 
-  const handleBid = async (e) => {
+const handleBid = async (e) => {
     e.preventDefault();
-    if (!bidAmount || bidAmount <= item.currentPrice) {
+
+    // 1. 로그인 여부 확인
+    const memberId = localStorage.getItem('userId');
+    const token = localStorage.getItem('token');
+
+    if (!memberId || !token) {
+      alert("입찰을 위해 먼저 로그인해주세요.");
+      navigate('/login');
+      return;
+    }
+
+    // 2. 입력값 검증 (이미 있는 로직)
+    if (!bidAmount || Number(bidAmount) <= item.currentPrice) {
       alert("현재가보다 높은 금액을 입력해주세요.");
       return;
     }
-    alert(`${Number(bidAmount).toLocaleString()}원 입찰을 시도합니다.`);
+
+    // 3. 백엔드로 보낼 데이터 준비 (포스트맨 테스트했던 그 구조)
+    const requestData = {
+      itemId: parseInt(id),       // URL에서 가져온 상품 ID
+      bidPrice: parseInt(bidAmount), // 사용자가 입력한 입찰 금액
+      memberId: parseInt(memberId)  // 로그인 시 저장한 내 ID
+    };
+
+    try {
+      console.log("전송 토큰:", token);
+      // 4. 입찰 API 호출
+      // 백엔드 보안 설정(Spring Security)에 따라 헤더에 토큰이 필요할 수 있습니다.
+      await axios.post('http://localhost:8080/api/bids', requestData, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+
+      alert(`${Number(bidAmount).toLocaleString()}원 입찰에 성공했습니다!`);
+      
+      // 5. 성공 후 화면 갱신: 다시 데이터를 불러와서 현재가를 업데이트합니다.
+      const updatedResponse = await axios.get(`http://localhost:8080/api/items/${id}`);
+      setItem(updatedResponse.data);
+      setBidAmount(''); // 입력창 초기화
+
+    } catch (err) {
+      console.error("입찰 실패:", err);
+      // 서버에서 보낸 에러 메시지가 있다면 그걸 보여주고, 없으면 기본 메시지 출력
+      const errorMsg = err.response?.data?.message || "입찰 처리 중 오류가 발생했습니다.";
+      alert(errorMsg);
+    }
   };
 
   if (!item) return <div className="p-10 text-center text-gray-500">상품 정보를 불러오는 중입니다...</div>;

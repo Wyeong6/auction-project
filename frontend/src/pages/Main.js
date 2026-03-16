@@ -64,7 +64,7 @@ function Main() {
                     : 'bg-gray-100 text-gray-500 hover:bg-gray-200'
                   }`}
                 >
-                  {item.status === 'BIDDING' ? '입찰하기' : '상세보기 (종료)'}
+                  {item.status === 'BIDDING' ? '입찰하기' : '종료'}
                 </button>
               </div>
             </div>
