@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import api from '../api/axios'; // ✅ 방금 만든 커스텀 api를 가져옵니다.
 import { useNavigate } from 'react-router-dom';
 
 function RegisterItem() {
@@ -16,17 +16,18 @@ function RegisterItem() {
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleSubmit = async (e) => {
+// RegisterItem.js 의 handleSubmit 함수 내부
+
+const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // 로그인 시 저장해둔 유저 ID를 가져옵니다. (없으면 1로 테스트하거나 로그인을 유도)
     const storedUserId = localStorage.getItem('userId');
 
     if (!storedUserId) {
-    alert("로그인 정보가 만료되었습니다. 다시 로그인해주세요.");
-    navigate('/login');
-    return;
-  }
+      alert("로그인 정보가 만료되었습니다.");
+      navigate('/login');
+      return;
+    }
 
     const requestData = {
       title: formData.title,
@@ -37,12 +38,14 @@ function RegisterItem() {
     };
 
     try {
-      await axios.post('http://localhost:8080/api/items', requestData);
-      alert('경매 물건이 성공적으로 등록되었습니다!');
-      navigate('/'); // 등록 후 메인 페이지로 이동
+      // ✅ headers를 따로 적지 않아도 인터셉터가 자동으로 붙여줍니다!
+      await api.post('/api/items', requestData); 
+      
+      alert('등록 성공!');
+      navigate('/');
     } catch (error) {
       console.error('등록 실패:', error);
-      alert('물건 등록에 실패했습니다. 다시 시도해주세요.');
+      alert('물건 등록에 실패했습니다.');
     }
   };
 

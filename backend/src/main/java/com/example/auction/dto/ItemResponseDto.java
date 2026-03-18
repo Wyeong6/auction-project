@@ -16,9 +16,11 @@ public class ItemResponseDto {
     private final LocalDateTime endTime;
     private final AuctionStatus status;
     private final Long sellerId;
+    private final String sellerName;        // 추가: 판매자 이름
+    private final String currentBidderName;  // 추가: 현재 입찰자 이름
 
     // 엔티티를 DTO로 변환해주는 생성자
-    public ItemResponseDto(Item item) {
+    public ItemResponseDto(Item item, String currentBidderName) {
         this.id = item.getId();
         this.title = item.getTitle();
         this.description = item.getDescription();
@@ -27,6 +29,15 @@ public class ItemResponseDto {
         this.status = item.getStatus();
         this.startPrice = item.getStartPrice();
         this.startTime = item.getStartTime();
-        this.sellerId = (item.getSeller() != null) ? item.getSeller().getId() : null;
+        // 판매자 정보 추출
+        if (item.getSeller() != null) {
+            this.sellerId = item.getSeller().getId();
+            this.sellerName = item.getSeller().getName(); // 여기서 이름을 가져옵니다!
+        } else {
+            this.sellerId = null;
+            this.sellerName = "알 수 없음";
+        }
+        // 현재 입찰자 이름 (Service에서 넘겨받음)
+        this.currentBidderName = currentBidderName != null ? currentBidderName : "입찰자 없음";
     }
 }

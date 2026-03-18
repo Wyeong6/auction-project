@@ -22,4 +22,8 @@ public class Member {
 
     @Column(nullable = false)
     private String name; // 사용자 이름
+
+    @Enumerated(EnumType.STRING) // DB 저장 시 'USER'나 'ADMIN' 같은 문자열로 저장되게 함
+    @Column(nullable = false)
+    private Role role = Role.USER; // 기본값은 일반 유저로 설정
 }

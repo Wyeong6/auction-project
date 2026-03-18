@@ -58,7 +58,7 @@ public class ItemService {
     @Transactional(readOnly = true) // 조회 전용 성능 최적화
     public List<ItemResponseDto> getAllItems() {
         return itemRepository.findAll().stream()
-                .map(ItemResponseDto::new) // Entity를 DTO로 변환
+                .map(item -> new ItemResponseDto(item, null)) // Entity를 DTO로 변환
                 .collect(Collectors.toList());
     }
 
@@ -70,9 +70,14 @@ public class ItemService {
         Item item = itemRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("해당 물건이 존재하지 않습니다. id=" + id));
 
-        return new ItemResponseDto(item);
-    }
+        // 1. 최고 입찰자 정보를 가져옵니다.
+        String bidderName = bidRepository.findTopByItemIdOrderByBidPriceDesc(id)
+                .map(bid -> bid.getBidder().getName()) // 입찰자가 있으면 그 사람의 이름을 추출
+                .orElse("입찰자 없음"); // 입찰 기록이 없으면 "입찰자 없음"으로 설정
 
+        // 2. 이제 두 개의 값을 생성자에 넣어줍니다.
+        return new ItemResponseDto(item, bidderName); // 빨간 줄이 사라집니다!
+    }
     /**
      * 특정 경매 물건의 낙찰자 조회 🏆 (유찰 대응 버전)
      */

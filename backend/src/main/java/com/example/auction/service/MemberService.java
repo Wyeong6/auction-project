@@ -2,6 +2,7 @@ package com.example.auction.service;
 
 import com.example.auction.dto.MemberJoinRequestDto;
 import com.example.auction.entity.Member;
+import com.example.auction.entity.Role;
 import com.example.auction.repository.MemberRepository;
 import com.example.auction.security.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +21,7 @@ public class MemberService {
     @Transactional
     public Long join(MemberJoinRequestDto requestDto) {
         // 1. 중복 회원 검증
+        System.out.println("프론트에서 넘어온 관리자 여부: " + requestDto.isAdmin());
         memberRepository.findByEmail(requestDto.getEmail())
                 .ifPresent(m -> {
                     throw new IllegalStateException("이미 존재하는 회원입니다.");
@@ -32,6 +34,7 @@ public class MemberService {
                 .email(requestDto.getEmail())
                 .password(encodedPassword)
                 .name(requestDto.getName())
+                .role(requestDto.isAdmin() ? Role.ADMIN : Role.USER)
                 .build();
 
         return memberRepository.save(member).getId();
